@@ -488,18 +488,18 @@ export function GameOverModal({
     setShowMailtoFallback(false);
 
     try {
-      let activePhotoId = photoId;
-      if (!activePhotoId) {
-        activePhotoId = await uploadForQrCode(renderedCardUrl);
-      }
-      if (!activePhotoId) {
-        throw new Error('Could not upload photo for delivery.');
-      }
-
-      const res = await fetch(`/api/photos/${activePhotoId}/email`, {
+      const res = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ toEmail: trimmed }),
+        body: JSON.stringify({
+          toEmail: trimmed,
+          imageDataUrl: renderedCardUrl,
+          playerName: savedName,
+          score: summary.score,
+          coins: summary.coins,
+          rank: savedRank,
+          shareUrl: qrShareUrl || '',
+        }),
       });
 
       const raw = await res.text();
@@ -508,7 +508,7 @@ export function GameOverModal({
         data = JSON.parse(raw);
       } catch {
         throw new Error(
-          'Email service temporarily returned HTML (server restarted or preview blocked). Please tap Send again.'
+          'Email service unavailable right now. Please tap Send again.'
         );
       }
 
