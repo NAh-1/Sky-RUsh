@@ -1,0 +1,6 @@
+{
+  "name": "SKY RUSH",
+  "description": "Kiosk-friendly 3D body-leaning hot air balloon arcade game powered by real-time MediaPipe pose detection.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
