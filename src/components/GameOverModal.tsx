@@ -33,9 +33,9 @@ interface GameOverModalProps {
 type ModalStage = 'enter' | 'photo_prompt' | 'photo_booth' | 'leaderboard';
 
 const NAME_KEY_ROWS = [
-  ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
-  ['J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R'],
-  ['S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+  ['Z', 'X', 'C', 'V', 'B', 'N', 'M'],
 ];
 
 const EMAIL_KEY_ROWS = [
@@ -1041,7 +1041,7 @@ export function GameOverModal({
   }
 
   // =========================================================================
-  // STAGE 1: NAME ENTRY + 9x3 A-Z ROYAL-BLUE KEYBOARD
+  // STAGE 1: NAME ENTRY + QWERTY ROYAL-BLUE KEYBOARD
   // =========================================================================
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center p-3 sm:p-4 bg-[#030b1a]/78 overflow-y-auto">
@@ -1080,13 +1080,13 @@ export function GameOverModal({
 
         <div className="space-y-2 select-none">
           {NAME_KEY_ROWS.map((row, rIdx) => (
-            <div key={rIdx} className="grid grid-cols-9 gap-1.5">
+            <div key={rIdx} className="flex justify-center gap-1.5">
               {row.map((letter) => (
                 <button
                   key={letter}
                   type="button"
                   onClick={() => handleChar(letter)}
-                  className="min-h-11 sm:min-h-12 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-yellow-400 active:text-[#07152e] font-display font-black text-xl text-white shadow-[0_3px_0_#1e3a8a] transition-colors cursor-pointer"
+                  className="flex-1 max-w-[44px] min-h-11 sm:min-h-12 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-yellow-400 active:text-[#07152e] font-display font-black text-xl text-white shadow-[0_3px_0_#1e3a8a] transition-colors cursor-pointer"
                 >
                   {letter}
                 </button>
@@ -1096,13 +1096,32 @@ export function GameOverModal({
                   type="button"
                   onClick={handleBackspace}
                   aria-label="Backspace"
-                  className="min-h-11 sm:min-h-12 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-yellow-400 active:text-[#07152e] font-display font-black text-white shadow-[0_3px_0_#1e3a8a] flex items-center justify-center transition-colors cursor-pointer"
+                  className="flex-[1.5] max-w-[66px] min-h-11 sm:min-h-12 rounded-xl bg-rose-600 hover:bg-rose-500 active:bg-yellow-400 active:text-[#07152e] font-display font-black text-white shadow-[0_3px_0_#9f1239] flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <Delete className="w-5 h-5" />
                 </button>
               )}
             </div>
           ))}
+          <div className="flex justify-center gap-1.5 pt-0.5">
+            <button
+              type="button"
+              onClick={() => handleChar(' ')}
+              className="w-48 sm:w-56 min-h-11 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-yellow-400 active:text-[#07152e] font-display font-bold text-sm tracking-widest text-white shadow-[0_3px_0_#1e3a8a] transition-colors cursor-pointer"
+            >
+              SPACE
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onKeyTapSound();
+                setName('');
+              }}
+              className="px-4 min-h-11 rounded-xl bg-cyan-600/80 hover:bg-cyan-500 active:bg-yellow-400 active:text-[#07152e] font-display font-bold text-sm tracking-wider text-white shadow-[0_3px_0_#155e75] transition-colors cursor-pointer"
+            >
+              CLEAR
+            </button>
+          </div>
         </div>
 
         <div className="mt-5 flex flex-col items-center gap-2">
