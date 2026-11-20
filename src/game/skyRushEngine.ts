@@ -428,7 +428,7 @@ export class SkyRushEngine {
     this.combo = 1;
     this.maxCombo = 1;
     this.comboTimer = 0;
-    this.forwardSpeed = 16.5;
+    this.forwardSpeed = 17.5;
 
     this.shieldActive = false;
     this.magnetTimer = 0;
@@ -492,7 +492,7 @@ export class SkyRushEngine {
   }
 
   private spawnHazardWave(): void {
-    const diff = Math.min(1, this.distance / 2800);
+    const diff = Math.min(1, this.distance / 1800);
     const lanes: (-1 | 0 | 1)[] = [-1, 0, 1];
     // Shuffle lanes so we always leave at least 1 safe open lane!
     for (let i = lanes.length - 1; i > 0; i--) {
@@ -769,9 +769,9 @@ export class SkyRushEngine {
     }
 
     // --- ACTIVE 3-LANE SUBWAY SURFERS GAMEPLAY (Top-Down View, Head Left/Center/Right) ---
-    const difficulty = Math.min(1, this.distance / 3200);
-    const targetSpeed = 16.5 + difficulty * 22 + (this.thermalTimer > 0 ? 14 : 0);
-    this.forwardSpeed = THREE.MathUtils.damp(this.forwardSpeed, targetSpeed, 3.2, dt);
+    const difficulty = Math.min(1, this.distance / 1800);
+    const targetSpeed = 17.5 + difficulty * 25 + (this.thermalTimer > 0 ? 14 : 0);
+    this.forwardSpeed = THREE.MathUtils.damp(this.forwardSpeed, targetSpeed, 3.8, dt);
 
     if (input.targetLane !== this.lastLane) {
       this.lastLane = input.targetLane;
@@ -833,7 +833,7 @@ export class SkyRushEngine {
     }
 
     // Spawning waves scaled by escalating difficulty
-    const hazardGap = THREE.MathUtils.lerp(24, 13.5, difficulty);
+    const hazardGap = THREE.MathUtils.lerp(24, 15, difficulty);
     this.hazardSpawnDist -= this.forwardSpeed * dt;
     if (this.hazardSpawnDist <= 0) {
       this.spawnHazardWave();
@@ -1133,7 +1133,7 @@ export class SkyRushEngine {
         ? 52
         : this.thermalTimer > 0
         ? 60
-        : 54 + Math.min(5, (this.forwardSpeed - 16.5) * 0.22);
+        : 54 + Math.min(6, (this.forwardSpeed - 17.5) * 0.24);
     if (Math.abs(this.camera.fov - targetFov) > 0.05) {
       this.camera.fov = THREE.MathUtils.damp(this.camera.fov, targetFov, 4, dt);
       this.camera.updateProjectionMatrix();
