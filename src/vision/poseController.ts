@@ -4,8 +4,6 @@ import type { CameraStatus, LeanInputState, SkyLane } from '../types/game';
 const MODEL_URL =
   'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
 
-const READY_HOLD_SECONDS = 1.5;
-
 // Comfortable, symmetric 3-lane hysteresis where Center stays relaxed and predictable
 const LANE_ENTER_THRESHOLD = 0.34;
 const LANE_EXIT_THRESHOLD = 0.20;
@@ -39,7 +37,6 @@ export class PoseController {
   // Smoothed head position & active lane
   private smoothX = 0;
   private currentLane: SkyLane = 0;
-  private readyHold = 0;
   private lastResultLandmarks: NormalizedLandmark[][] = [];
   private lockedIndex = -1;
 
@@ -274,7 +271,7 @@ export class PoseController {
     return Math.max(0.18, this.baselineSpan * 1.05);
   }
 
-  public update(isAttractMode: boolean): LeanInputState {
+  public update(_isAttractMode: boolean): LeanInputState {
     const now = performance.now();
     const dt = Math.min((now - this.lastTickMs) / 1000, 0.05);
     this.lastTickMs = now;
@@ -301,7 +298,6 @@ export class PoseController {
       this.currentLane = this.virtualLane;
       targetX = this.virtualLane;
       this.state.personDetected = false;
-      this.readyHold = 0;
     } else if (this.lockedIndex >= 0 && this.lastResultLandmarks[this.lockedIndex]) {
       const lm = this.lastResultLandmarks[this.lockedIndex];
       const nose = lm[0];
@@ -320,24 +316,11 @@ export class PoseController {
         const rangeX = this.getRangeX();
         const rawX = (mirrorHeadX - this.baselineHeadX) / rangeX;
         targetX = Math.max(-1, Math.min(1, rawX));
-
-        // Ready stance hold in Attract Mode when head is inside the Center Lane zone
-        if (isAttractMode) {
-          const inCenterZone = Math.abs(rawX) <= LANE_ENTER_THRESHOLD && span > 0.08;
-          if (inCenterZone) {
-            this.readyHold = Math.min(READY_HOLD_SECONDS, this.readyHold + dt);
-          } else {
-            this.readyHold = Math.max(0, this.readyHold - dt * 1.5);
-          }
-        } else {
-          this.readyHold = 0;
-        }
       }
     } else {
       this.state.personDetected = false;
       this.state.peopleCount = 0;
       this.state.trackedSpan = 0;
-      this.readyHold = Math.max(0, this.readyHold - dt * 2);
     }
 
     // Smooth responsive exponential filter for head X
@@ -364,7 +347,7 @@ export class PoseController {
     this.state.calibrated = this.calibrated;
     this.state.burnerOn = false;
     this.state.venting = false;
-    this.state.readyProgress = this.readyHold / READY_HOLD_SECONDS;
+    this.state.readyProgress = 0;
 
     this.drawPreview();
     return this.state;

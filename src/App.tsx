@@ -126,9 +126,6 @@ export default function App() {
           lastUiSync = now;
           setLean({ ...nextLean });
         }
-        if (isAttract && phaseRef.current === 'attract' && nextLean.readyProgress >= 0.99) {
-          startFlight();
-        }
         return nextLean;
       },
       onHudUpdate: (nextHud) => setHud(nextHud),

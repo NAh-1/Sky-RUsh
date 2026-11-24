@@ -48,7 +48,6 @@ export function AttractOverlay({
     return () => onAttachPreviewCanvas(null);
   }, [onAttachPreviewCanvas]);
 
-  const readyPct = Math.round(lean.readyProgress * 100);
   const slots = Array.from({ length: 10 }, (_, idx) => leaderboard[idx] ?? null);
 
   return (
@@ -122,47 +121,6 @@ export function AttractOverlay({
             height={270}
             className="w-full h-full object-cover"
           />
-
-          {lean.readyProgress > 0.04 && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#07152e]/60">
-              <svg width="92" height="92" viewBox="0 0 92 92">
-                <circle
-                  cx="46"
-                  cy="46"
-                  r="38"
-                  fill="rgba(7,21,46,0.85)"
-                  stroke="rgba(34,211,238,0.25)"
-                  strokeWidth="6"
-                />
-                <circle
-                  cx="46"
-                  cy="46"
-                  r="38"
-                  fill="none"
-                  stroke="#facc15"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                  strokeDasharray={2 * Math.PI * 38}
-                  strokeDashoffset={2 * Math.PI * 38 * (1 - lean.readyProgress)}
-                  transform="rotate(-90 46 46)"
-                />
-                <text
-                  x="46"
-                  y="52"
-                  textAnchor="middle"
-                  fill="#ffffff"
-                  fontFamily="JetBrains Mono, monospace"
-                  fontWeight="800"
-                  fontSize="16"
-                >
-                  {readyPct}%
-                </text>
-              </svg>
-              <span className="mt-1 text-xs font-display font-bold tracking-wider text-yellow-300 uppercase">
-                HOLD CENTER TO LAUNCH
-              </span>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-2 min-h-6 text-center">
@@ -196,7 +154,7 @@ export function AttractOverlay({
             textShadow: '0 3px 0 #0f172a, 0 5px 14px rgba(0,0,0,0.45)',
           }}
         >
-          STEP IN FRONT OF CAMERA TO PLAY
+          PRESS START FLIGHT WHEN READY
         </h1>
 
         <button
