@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidLeaderboardEntry(data) {
+      return data.keys().hasAll(['name', 'score', 'altitude', 'coins', 'date', 'createdAt'])
+        && data.keys().hasOnly(['name', 'score', 'altitude', 'coins', 'date', 'createdAt'])
+        && data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 12
+        && data.name.matches('^[A-Z0-9 ]+$')
+        && (data.score is int || data.score is float)
+        && data.score >= 0
+        && data.score <= 10000000
+        && (data.altitude is int || data.altitude is float)
+        && data.altitude >= 0
+        && data.altitude <= 1000000
+        && (data.coins is int || data.coins is float)
+        && data.coins >= 0
+        && data.coins <= 100000
+        && data.date is string
+        && data.date.size() == 10
+        && data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && data.createdAt == request.time;
+    }
+
+    match /leaderboard/{entryId} {
+      allow get: if isValidId(entryId);
+      allow list: if resource.data.score >= 0;
+      allow create: if isValidId(entryId) && isValidLeaderboardEntry(incoming());
+      allow update, delete: if false;
+    }
+  }
+}

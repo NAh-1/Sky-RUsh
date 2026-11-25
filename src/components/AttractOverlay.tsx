@@ -179,7 +179,7 @@ export function AttractOverlay({
               <div className="flex items-center gap-2.5">
                 <Trophy className="w-6 h-6 text-yellow-400" />
                 <h2 className="font-display font-black text-2xl sm:text-3xl tracking-wide text-cyan-300 uppercase">
-                  TOP 10 LEADERBOARD
+                  GLOBAL TOP 10 LEADERBOARD
                 </h2>
               </div>
               <button

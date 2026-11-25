@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "A global arcade high score entry for SKY RUSH.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Player arcade display tag (uppercase letters, digits, spaces)",
+          "minLength": 1,
+          "maxLength": 12,
+          "pattern": "^[A-Z0-9 ]+$"
+        },
+        "score": {
+          "type": "number",
+          "description": "Final run score"
+        },
+        "altitude": {
+          "type": "number",
+          "description": "Final altitude reached in meters"
+        },
+        "coins": {
+          "type": "number",
+          "description": "Gold coins collected during the run"
+        },
+        "date": {
+          "type": "string",
+          "description": "ISO calendar date YYYY-MM-DD",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the score was recorded"
+        }
+      },
+      "required": ["name", "score", "altitude", "coins", "date", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/leaderboard/{entryId}": {
+      "schema": { "$ref": "#/entities/LeaderboardEntry" },
+      "description": "Public global SKY RUSH arcade leaderboard entries."
+    }
+  }
+}

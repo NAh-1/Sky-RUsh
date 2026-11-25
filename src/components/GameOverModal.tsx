@@ -204,7 +204,13 @@ export function GameOverModal({
   const [emailError, setEmailError] = useState('');
   const [showMailtoFallback, setShowMailtoFallback] = useState(false);
 
-  const potentialRank = previewPotentialRank(summary.score);
+  const potentialRank = previewPotentialRank(summary.score, leaderboard);
+
+  useEffect(() => {
+    if (leaderboard.length > 0 && savedId) {
+      setSavedEntries(leaderboard);
+    }
+  }, [leaderboard, savedId]);
 
   const handleChar = (ch: string) => {
     onKeyTapSound();
@@ -953,7 +959,7 @@ export function GameOverModal({
               {savedRank > 0 ? `RANK #${savedRank}` : 'NEW FLIGHT RECORDED'}
             </div>
             <h2 className="font-display font-black text-2xl sm:text-3xl text-cyan-300 uppercase tracking-wide mt-2 mb-2.5">
-              TOP 10 LEADERBOARD
+              GLOBAL TOP 10 LEADERBOARD
             </h2>
           </div>
 

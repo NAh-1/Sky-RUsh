@@ -5,8 +5,11 @@ import { GameHud } from './components/GameHud';
 import { GameOverModal } from './components/GameOverModal';
 import { SkyRushEngine } from './game/skyRushEngine';
 import {
+  submitGlobalScore,
+  subscribeGlobalLeaderboard,
+} from './services/leaderboardService';
+import {
   loadLeaderboard,
-  saveLeaderboardEntry,
   type CameraStatus,
   type GamePhase,
   type HudSnapshot,
@@ -92,12 +95,20 @@ export default function App() {
       if (!summary) {
         return { entries: leaderboard, rank: 0, savedId: '' };
       }
-      const res = saveLeaderboardEntry(playerName, summary);
+      const res = submitGlobalScore(playerName, summary, leaderboard);
       setLeaderboard(res.entries);
       return res;
     },
     [summary, leaderboard]
   );
+
+  // Real-time global leaderboard sync via Cloud Firestore
+  useEffect(() => {
+    const unsubscribe = subscribeGlobalLeaderboard((entries) => {
+      setLeaderboard(entries);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Initialize Sound, PoseController, and Three.js Engine once
   useEffect(() => {

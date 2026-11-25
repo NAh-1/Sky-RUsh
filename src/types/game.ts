@@ -90,11 +90,21 @@ export function loadLeaderboard(): LeaderboardEntry[] {
   }
 }
 
-export function previewPotentialRank(score: number): number {
-  const entries = loadLeaderboard();
+export function cacheLeaderboard(entries: LeaderboardEntry[]): void {
+  try {
+    localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(entries.slice(0, 10)));
+  } catch {
+    // Ignore storage quota errors in kiosk private mode
+  }
+}
+
+export function previewPotentialRank(
+  score: number,
+  currentEntries: LeaderboardEntry[] = loadLeaderboard()
+): number {
   const rounded = Math.round(score);
-  let idx = entries.findIndex((e) => rounded > e.score);
-  if (idx === -1) idx = entries.length;
+  let idx = currentEntries.findIndex((e) => rounded > e.score);
+  if (idx === -1) idx = currentEntries.length;
   return idx < 10 ? idx + 1 : 0;
 }
 
@@ -117,11 +127,7 @@ export function saveLeaderboardEntry(
     .sort((a, b) => b.score - a.score)
     .slice(0, 10);
 
-  try {
-    localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(next));
-  } catch {
-    // Ignore storage quota errors in kiosk private mode
-  }
+  cacheLeaderboard(next);
 
   const rank = next.findIndex((e) => e.id === entry.id) + 1;
   return { entries: next, rank, savedId: entry.id };
